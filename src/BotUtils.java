@@ -24,7 +24,7 @@ class BotUtils {
 
     // Helper functions to make certain aspects of the bot easier to use.
     static IMessage sendMessage(IChannel channel, String message){    	
-        // This might look weird but it'll be explained in another page.
+    	// This might look weird but it'll be explained in another page.
         RequestBuffer.request(() -> {
         	IMessage r = null;
             try{
@@ -36,7 +36,7 @@ class BotUtils {
             return r;
         });
 
-		return null;
+		return null;    	
     }
         
 }

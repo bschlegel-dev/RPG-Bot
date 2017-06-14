@@ -22,13 +22,10 @@ public class Main {
 			return;
 		}
 
-		cli = BotUtils.getBuiltDiscordClient(args[0]);
-
-
+		cli = BotUtils.getBuiltDiscordClient(args[0]);		
 		// Commented out as you don't really want duplicate listeners unless you're intentionally writing your code 
 		// like that.
-		// Register a listener via the IListener interface
-		
+		// Register a listener via the IListener interface		
 		cli.getDispatcher().registerListener(new IListener<MessageReceivedEvent>() {
 			public void handle(MessageReceivedEvent event) {
 				if(event.getMessage().getContent().startsWith(BotUtils.BOT_PREFIX + "request")) {	
