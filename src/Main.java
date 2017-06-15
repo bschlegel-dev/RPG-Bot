@@ -1,3 +1,7 @@
+package src;
+
+import com.darichey.discord.api.Command;
+import com.darichey.discord.api.CommandRegistry;
 import com.vdurmont.emoji.EmojiManager;
 
 import sx.blah.discord.api.IDiscordClient;
@@ -5,73 +9,68 @@ import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
+import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
 import sx.blah.discord.util.RequestBuffer;
 
 public class Main {
-	public static IMessage m;
-	public static ReactionEvent rE = new ReactionEvent();
-	public static IDiscordClient cli;
-	public static String param;
-	public static long paramL;
-	public static IUser requestBy;
+	final static int cmdAmount = 5;
+	public static IDiscordClient cli;	
+	public static Command[] cmd = new Command[cmdAmount];	
+	public static IGuild iG;
 	public static void main(String[] args){		
 		if(args.length != 1){
 			System.out.println("Please enter the bots token as the first argument e.g java -jar thisjar.jar tokenhere");
 			return;
-		}
-
-		cli = BotUtils.getBuiltDiscordClient(args[0]);		
-		// Commented out as you don't really want duplicate listeners unless you're intentionally writing your code 
-		// like that.
-		// Register a listener via the IListener interface		
-		cli.getDispatcher().registerListener(new IListener<MessageReceivedEvent>() {
-			public void handle(MessageReceivedEvent event) {
-				if(event.getMessage().getContent().startsWith(BotUtils.BOT_PREFIX + "request")) {	
-					try {
-						param = "<" + event.getMessage().getContent().substring(event.getMessage().getContent().indexOf("@"));
-						paramL = Long.parseLong(param.substring(2, param.length()-1));
-						System.out.println(paramL);
-						BotUtils.sendMessage(event.getChannel(), "The first parameter is "+param);
-					}catch(Exception e) {
-						
-					}				
-					boolean success = false;
-					
-					try {
-						System.out.println(event.getGuild().getUserByID(paramL));
-						m = event.getGuild().getUserByID(paramL).getOrCreatePMChannel().sendMessage("Accept Request by "+event.getMessage().getAuthor()+"?");
-					}catch(Exception e) {
-						
-					}
-					dispatchEvent(cli.getDispatcher());
-					cli.getDispatcher().registerListener(rE);
-					do {
-						try {							
-							m.addReaction("👍");
-							m.addReaction("👎");
-							success = true;
-							break;
-						}catch(Exception e) {
-
-						}
-					}while(success == false);					
-				}else {
-					//event.getChannel().sendMessage("Bot Online");
-				}				
-				//.addReaction(":thumbsup:");
+		}					
+		cli = BotUtils.getBuiltDiscordClient(args[0]);
+		
+		//A test command structure
+		cmd[0] = new Command("test");
+		cmd[0].withDescription("A command for testing");
+		cmd[0].onExecuted(context ->	context.getMessage().getChannel().sendMessage("Test"));
+		CommandRegistry.getForClient(Main.cli).register(Main.cmd[0]);
+		
+		cmd[1] = new Command("request");
+		cmd[1].withDescription("Sends a request to another Player");
+		cmd[1].withUsage("request @bob");			
+		
+		//Command for Changing Hotkeys
+		cmd[2] = new Command("prefix");
+		cmd[2].withDescription("Change the hotkeys of commands");
+		cmd[2].onExecuted(context -> {			
+			if(context.getArgs().length >= 1) {				
+				CommandRegistry.getForClient(cli).setPrefix(context.getArgs()[0]);				
+				context.getMessage().getChannel().sendMessage("Prefix changed to '"+context.getArgs()[0]+"'");
+				BotUtils.BOT_PREFIX = context.getArgs()[0];
 			}
-		});				
-
-		// Register a listener via the EventSubscriber annotation which allows for organisation and delegation of events				
-		// Only login after all events are registered otherwise some may be missed.
+		});
+		CommandRegistry.getForClient(Main.cli).register(Main.cmd[2]);
+		
+		cmd[3] = new Command("help");
+		cmd[3].withDescription("Help page for commands");
+		cmd[3].onExecuted(context -> {	
+			String oP = "```diff\n";
+			for(int i = 0; i < cmd.length; i++) {				
+				oP += "- "+BotUtils.BOT_PREFIX+cmd[i].getName()+"\n+ "+cmd[i].getDescription()+"\n";
+			}
+			oP += "```";
+			context.getMessage().getChannel().sendMessage(oP);
+		});
+		CommandRegistry.getForClient(Main.cli).register(Main.cmd[3]);
+		
+		cmd[4] = new Command("example");
+		cmd[4].withDescription("An example for syntax highlighting");
+		cmd[4].onExecuted(context -> {	
+			String oP = "```diff\n+ test\n- test```";
+			context.getMessage().getChannel().sendMessage(oP);
+		});
+		CommandRegistry.getForClient(Main.cli).register(Main.cmd[4]);
 		cli.login();
-
-	}
-	
-	public static void dispatchEvent(EventDispatcher eD) {
-		eD.unregisterListener(rE);
+		
+		Request r = new Request();		
 	}
 
 }
