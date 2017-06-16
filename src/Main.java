@@ -30,9 +30,9 @@ public class Main {
 		cli.login();
 		
 		//Initialising Commands
-		Request r = new Request();		
-		Help h = new Help();
 		Commands c = new Commands();
+		Request r = new Request();		
+		Help h = new Help();	
 	}
 
 }
