@@ -1,4 +1,4 @@
-package src;
+import java.util.Arrays;
 
 import com.darichey.discord.api.Command;
 import com.darichey.discord.api.CommandRegistry;
@@ -52,11 +52,30 @@ public class Main {
 		cmd[3] = new Command("help");
 		cmd[3].withDescription("Help page for commands");
 		cmd[3].onExecuted(context -> {	
+			String[] names = new String[cmd.length];
+			String[] description = new String[cmd.length];
+			for(int i = 0; i < cmd.length; i++) {
+				names[i] = cmd[i].getName();
+				description[i] = cmd[i].getDescription();
+			}
+			
+			for (int n = 0; n < cmd.length; n++) {
+		        for (int m = 0; m < 4 - n; m++) {
+		            if ((names[m].compareTo(names[m + 1])) > 0) {
+		                String swapString = names[m];
+		                names[m] = names[m + 1];
+		                names[m + 1] = swapString;
+		                String swapString2 = description[m];
+		                description[m] = description[m + 1];
+		                description[m + 1] = swapString2;
+		            }
+		        }
+		    }
 			String oP = "```diff\n";
 			for(int i = 0; i < cmd.length; i++) {				
-				oP += "- "+BotUtils.BOT_PREFIX+cmd[i].getName()+"\n+ "+cmd[i].getDescription()+"\n";
+				oP += "- "+names[i]+"\n+ "+description[i]+"\n";
 			}
-			oP += "```";
+			oP += "\n\nCurrent prefix is '"+BotUtils.BOT_PREFIX+"'```";
 			context.getMessage().getChannel().sendMessage(oP);
 		});
 		CommandRegistry.getForClient(Main.cli).register(Main.cmd[3]);

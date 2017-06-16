@@ -1,5 +1,3 @@
-package src;
-
 import com.darichey.discord.api.Command;
 import com.darichey.discord.api.CommandRegistry;
 
