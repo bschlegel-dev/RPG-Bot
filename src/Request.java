@@ -58,7 +58,6 @@ public class Request {
 					}
 				});				
 			}
-		});		
-		CommandRegistry.getForClient(Main.cli).register(Main.cmd[1]);
+		});				
 	}
 }
