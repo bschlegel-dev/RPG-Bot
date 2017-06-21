@@ -28,7 +28,7 @@ import sx.blah.discord.util.RequestBuffer;
 public class Main {
 	final static int cmdAmount = 6;
 	public static IDiscordClient cli;	
-	public static Command[] cmd = new Command[0];	
+	public static Command[] cmd = new Command[0];
 	public static IGuild iG;
 
 	public static void main(String[] args){		
@@ -56,11 +56,27 @@ public class Main {
          }
 		
 		//Initialising Commands		
-		Commands c = new Commands();		
-		Request r = new Request();		
-		Help h = new Help();		
-	}
+		Commands c = new Commands();
+		Invite r = new Invite();
+		Help h = new Help();
+		
+		cli.getDispatcher().registerListener(new IListener<MessageReceivedEvent>() {
 
+			@Override
+			public void handle(MessageReceivedEvent event) {
+				if(event.getMessage().toString().startsWith(BotUtils.BOT_PREFIX)) {
+					for(int i = 0; i < cmd.length; i++) {
+						if(cmd[i].getName() != event.getMessage().toString()) {
+							event.getChannel().sendMessage("Kill your self learn my syntax");
+							break;
+						}
+					}
+				}
+			}
+			
+		});
+	}
+	
 	/**
 	 * Gets a command from the Command array
 	 * @param name the name of the command

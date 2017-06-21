@@ -8,15 +8,15 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.Reactio
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 
-public class Request {
+public class Invite {
 	private IGuild iG;
 	private String param;
 	private long paramL;
 	private long paramL2;
 	private IMessage m;
 	@SuppressWarnings("unchecked")
-	public Request() {				
-		Main.cmd[1].onExecuted(context -> {
+	public Invite() {				
+		Main.getCommand("invite").onExecuted(context -> {
 			if(context.getArgs().length >= 1) {				
 				iG = context.getMessage().getGuild();
 				
@@ -27,9 +27,9 @@ public class Request {
 				}catch(Exception e) {
 
 				}
-				BotUtils.sendMessage(context.getMessage().getGuild().getGeneralChannel(), "Request pending!");								
+				BotUtils.sendMessage(context.getMessage().getGuild().getGeneralChannel(), "invite pending!");								
 				boolean success = false;	 
-				m = iG.getUserByID(paramL).getOrCreatePMChannel().sendMessage("Accept Request by "+context.getMessage().getAuthor()+"?");
+				m = iG.getUserByID(paramL).getOrCreatePMChannel().sendMessage(context.getMessage().getAuthor()+" invited you to his group, accept?");
 				paramL2 = context.getMessage().getAuthor().getLongID();		
 				
 				//Adds the Reactions to the original Message
@@ -49,9 +49,9 @@ public class Request {
 						if(event.getMessage().equals(m)) {					
 							if(!(event.getUser().getLongID() == event.getClient().getOurUser().getLongID())) {							
 								if(event.getReaction().getUnicodeEmoji().getUnicode().equals("👍")) {												
-									iG.getUserByID(paramL2).getOrCreatePMChannel().sendMessage(context.getArgs()[0]+" accepted your Request");												
+									iG.getUserByID(paramL2).getOrCreatePMChannel().sendMessage(context.getArgs()[0]+" accepted your invite");												
 								}else if(event.getReaction().getUnicodeEmoji().getUnicode().equals("👎")) {																	
-									iG.getUserByID(paramL2).getOrCreatePMChannel().sendMessage(context.getArgs()[0]+" denied your Request");										
+									iG.getUserByID(paramL2).getOrCreatePMChannel().sendMessage(context.getArgs()[0]+" denied your invite");										
 								}
 							}
 						}
