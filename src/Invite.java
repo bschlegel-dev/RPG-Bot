@@ -7,6 +7,7 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IUser;
 
 public class Invite {
 	private IGuild iG;
@@ -49,7 +50,7 @@ public class Invite {
 						if(event.getMessage().equals(m)) {					
 							if(!(event.getUser().getLongID() == event.getClient().getOurUser().getLongID())) {							
 								if(event.getReaction().getUnicodeEmoji().getUnicode().equals("👍")) {												
-									iG.getUserByID(paramL2).getOrCreatePMChannel().sendMessage(context.getArgs()[0]+" accepted your invite");												
+									iG.getUserByID(paramL2).getOrCreatePMChannel().sendMessage(context.getArgs()[0]+" accepted your invite");									
 								}else if(event.getReaction().getUnicodeEmoji().getUnicode().equals("👎")) {																	
 									iG.getUserByID(paramL2).getOrCreatePMChannel().sendMessage(context.getArgs()[0]+" denied your invite");										
 								}

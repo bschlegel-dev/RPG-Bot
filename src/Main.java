@@ -65,11 +65,14 @@ public class Main {
 			@Override
 			public void handle(MessageReceivedEvent event) {
 				if(event.getMessage().toString().startsWith(BotUtils.BOT_PREFIX)) {
+					int tempCounter = 0;
 					for(int i = 0; i < cmd.length; i++) {
-						if(cmd[i].getName() != event.getMessage().toString()) {
-							event.getChannel().sendMessage("Kill your self learn my syntax");
-							break;
+						if(cmd[i].getName() == event.getMessage().toString()) {							
+							tempCounter++;
 						}
+					}
+					if(tempCounter != 1) {
+						event.getChannel().sendMessage("Kill your self learn my syntax");
 					}
 				}
 			}
