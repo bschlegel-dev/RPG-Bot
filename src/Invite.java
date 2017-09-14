@@ -14,28 +14,39 @@ public class Invite {
 	private String param;
 	private long paramL;
 	private long paramL2;
+	private boolean spaceName = false;
 	private IMessage m;
 	@SuppressWarnings("unchecked")
 	public Invite() {				
 		Main.getCommand("invite").onExecuted(context -> {
-			if(context.getArgs().length >= 1) {				
+			if(context.getArgs().length >= 1) {
 				iG = context.getMessage().getGuild();
 				
-				//Getting the long ID of a User
-				param = "<" + context.getMessage().getContent().substring(context.getMessage().getContent().indexOf("@"));
+				//Getting the long ID of a User			
+				if(context.getMessage().getContent().substring(context.getMessage().getContent().indexOf("<")).charAt(2) == '!') {
+					param = "<" + context.getMessage().getContent().substring(context.getMessage().getContent().indexOf("@!"));
+					spaceName = true;
+				}else {
+					param = "<" + context.getMessage().getContent().substring(context.getMessage().getContent().indexOf("@"));
+				}			
 				try {
-					paramL = Long.parseLong(param.substring(2, param.length()-1));
+					if(spaceName) {
+						paramL = Long.parseLong(param.substring(3, param.length()-1));
+					}else {
+						paramL = Long.parseLong(param.substring(2, param.length()-1));
+					}
 				}catch(Exception e) {
-
+					
 				}
-				BotUtils.sendMessage(context.getMessage().getGuild().getGeneralChannel(), "invite pending!");								
-				boolean success = false;	 
+				BotUtils.sendMessage(context.getMessage().getGuild().getGeneralChannel(), "invite pending!");
+				System.out.println(paramL);
+				boolean success = false;
 				m = iG.getUserByID(paramL).getOrCreatePMChannel().sendMessage(context.getMessage().getAuthor()+" invited you to his group, accept?");
 				paramL2 = context.getMessage().getAuthor().getLongID();		
 				
 				//Adds the Reactions to the original Message
 				do {
-					try {							
+					try {
 						m.addReaction("👍");
 						m.addReaction("👎");
 						success = true;

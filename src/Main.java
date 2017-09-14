@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -30,6 +31,7 @@ public class Main {
 	public static IDiscordClient cli;	
 	public static Command[] cmd = new Command[0];
 	public static IGuild iG;
+	public static Group[] g;
 
 	public static void main(String[] args){		
 		if(args.length != 1){
@@ -39,7 +41,6 @@ public class Main {
 		//Initialising Client
 		cli = BotUtils.getBuiltDiscordClient(args[0]);
 		cli.login();			
-
 		 JSONParser parser = new JSONParser();
     	 try {
     	 Object obj = parser.parse(new FileReader("test.json"));
@@ -67,7 +68,7 @@ public class Main {
 				if(event.getMessage().toString().startsWith(BotUtils.BOT_PREFIX)) {
 					int tempCounter = 0;
 					for(int i = 0; i < cmd.length; i++) {
-						if(cmd[i].getName() == event.getMessage().toString()) {							
+						if(cmd[i].getName().equalsIgnoreCase(event.getMessage().toString().substring(1))) {							
 							tempCounter++;
 						}
 					}
